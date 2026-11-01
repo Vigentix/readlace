@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="und">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title contenteditable="true">OpenAI latency fixture</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font:
+          14px/1.45 system-ui,
+          sans-serif;
+      }
+
+      section {
+        padding: 20px;
+      }
+
+      .labels {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(180px, 1fr));
+        gap: 12px;
+      }
+
+      button,
+      h2,
+      p {
+        margin: 0;
+        padding: 10px 12px;
+      }
+
+      article {
+        display: grid;
+        gap: 12px;
+        max-width: 900px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      th,
+      td {
+        height: 24px;
+        border: 1px solid #ddd;
+        padding: 2px 8px;
+        text-align: left;
+      }
+    </style>
+  </head>
+  <body>
+    <section data-openai-corpus="ui-labels" contenteditable="true">
+      <div class="labels">
+        <button id="ui-record-01" data-benchmark-record>
+          Customer summary
+        </button>
+        <button id="ui-record-02" data-benchmark-record>Save changes</button>
+        <button id="ui-record-03" data-benchmark-record>Payment status</button>
+        <button id="ui-record-04" data-benchmark-record>Export report</button>
+        <button id="ui-record-05" data-benchmark-record>Billing month</button>
+        <button id="ui-record-06" data-benchmark-record>Show details</button>
+        <button id="ui-record-07" data-benchmark-record>
+          Tổng quan khách hàng
+        </button>
+        <button id="ui-record-08" data-benchmark-record>Lưu thay đổi</button>
+        <button id="ui-record-09" data-benchmark-record>
+          Trạng thái thanh toán
+        </button>
+        <button id="ui-record-10" data-benchmark-record>Xuất báo cáo</button>
+        <button id="ui-record-11" data-benchmark-record>
+          Tháng lập hóa đơn
+        </button>
+        <button id="ui-record-12" data-benchmark-record>Xem chi tiết</button>
+        <button id="ui-record-13" data-benchmark-record>顧客概要</button>
+        <button id="ui-record-14" data-benchmark-record>変更を保存</button>
+        <button id="ui-record-15" data-benchmark-record>支払状況</button>
+        <button id="ui-record-16" data-benchmark-record>レポートを出力</button>
+        <button id="ui-record-17" data-benchmark-record>請求月</button>
+        <button id="ui-record-18" data-benchmark-record>詳細を表示</button>
+      </div>
+    </section>
+
+    <section data-openai-corpus="article" contenteditable="true">
+      <article>
+        <p id="article-record-01" data-benchmark-record>
+          A controlled benchmark should compare the same content, browser, and
+          target language so that request scheduling is the only meaningful
+          difference between runs.
+        </p>
+        <p id="article-record-02" data-benchmark-record>
+          The first visible result matters to the reader, while the final
+          viewport completion time shows whether the entire translation flow
+          actually became faster.
+        </p>
+        <p id="article-record-03" data-benchmark-record>
+          Repeated measurements reduce the chance that one unusually fast or
+          slow provider response determines the production configuration.
+        </p>
+        <p id="article-record-04" data-benchmark-record>
+          Một phép đo có kiểm soát phải dùng cùng nội dung, trình duyệt và ngôn
+          ngữ đích để khác biệt quan sát được phản ánh đúng luồng xử lý.
+        </p>
+        <p id="article-record-05" data-benchmark-record>
+          Kết quả hiển thị đầu tiên ảnh hưởng đến cảm nhận của người dùng, còn
+          thời gian hoàn tất cho biết toàn bộ vùng nhìn có thực sự nhanh hơn hay
+          không.
+        </p>
+        <p id="article-record-06" data-benchmark-record>
+          Nhiều lần đo giúp hạn chế việc một phản hồi bất thường của nhà cung
+          cấp quyết định cấu hình được đưa vào môi trường sử dụng chính thức.
+        </p>
+        <p id="article-record-07" data-benchmark-record>
+          制御されたベンチマークでは、同じ内容、ブラウザー、対象言語を使い、
+          観測された差が処理方式の違いを正しく表すようにします。
+        </p>
+        <p id="article-record-08" data-benchmark-record>
+          最初の翻訳が見えるまでの時間は体感速度を示し、表示範囲全体の完了時間は
+          翻訳処理全体が本当に速くなったかを示します。
+        </p>
+        <p id="article-record-09" data-benchmark-record>
+          複数回の測定により、偶然に速い、または遅い応答だけで本番設定が決まる
+          可能性を抑えることができます。
+        </p>
+      </article>
+    </section>
+
+    <section data-openai-corpus="table-300" contenteditable="true">
+      <table>
+        <thead contenteditable="true">
+          <tr>
+            <th>Record</th>
+            <th>Amount</th>
+          </tr>
+        </thead>
+        <tbody id="table-records"></tbody>
+      </table>
+    </section>
+
+    <script>
+      const rowLabels = [
+        "Customer invoice detail for the controlled benchmark",
+        "Chi tiết hóa đơn khách hàng dùng cho phép đo có kiểm soát",
+        "制御された測定に使用する顧客請求明細",
+      ];
+      const rows = document.querySelector("#table-records");
+      for (let index = 0; index < 300; index += 1) {
+        const row = document.createElement("tr");
+        const label = document.createElement("td");
+        label.id = `table-record-${String(index).padStart(3, "0")}`;
+        label.dataset.benchmarkRecord = "";
+        label.textContent = `${rowLabels[index % rowLabels.length]} ${String(index + 1).padStart(3, "0")}`;
+        const amount = document.createElement("td");
+        amount.translate = false;
+        amount.textContent = `${index + 1},000`;
+        row.append(label, amount);
+        rows.append(row);
+      }
+    </script>
+  </body>
+</html>

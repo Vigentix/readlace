@@ -1,0 +1,191 @@
+/*
+ * Readlace extension design tokens (ui-enhancement Decisions 3, 6 and 7):
+ * paper and ink in light mode, neutral charcoal in dark mode. One source for
+ * the popup, the Reader and the selection panel. Import it from a Tailwind
+ * root (after `tailwindcss`) so the `@theme inline` map and the motion
+ * utilities exist there. Tokens sit on `:root` for extension pages and on
+ * `:host` for the selection panel's shadow root.
+ *
+ * Never import this into page-facing styles (`assets/content.css`).
+ */
+
+/* Raw tokens, shared with the web system. Utilities read them through the
+   `@theme inline` map below, so dark mode only swaps these values. */
+:root,
+:host {
+  color-scheme: light;
+  --rl-paper: #fbf7ef;
+  --rl-paper-2: #f3ecdf;
+  --rl-card: #fffdf8;
+  --rl-ink: #1d1b3a;
+  --rl-ink-soft: #4d4a68;
+  --rl-muted: #66627d;
+  --rl-line: #e4dccb;
+  --rl-line-strong: #d7cdb8;
+  --rl-brand: #2f2ba8;
+  --rl-brand-hover: #26228f;
+  --rl-on-brand: #ffffff;
+  --rl-brand-ink: #2f2ba8;
+  --rl-brand-soft: #e9e8fa;
+  --rl-mark-stem: #2f2ba8;
+  --rl-coral: #f0614a;
+  --rl-coral-ink: #b23f2b;
+  --rl-coral-soft: #fde6e0;
+  --rl-ok: #1f7a55;
+  --rl-danger: #b3261e;
+  --rl-danger-soft: #fbe7e4;
+  --rl-warn: #8a5300;
+  --rl-warn-soft: #fbefd6;
+  --rl-shadow: 0 1px 2px rgb(29 27 58 / 0.08);
+  --rl-shadow-pop:
+    0 1px 0 rgb(29 27 58 / 0.04), 0 18px 40px -18px rgb(29 27 58 / 0.4);
+
+  --ease: cubic-bezier(0.2, 0, 0, 1);
+  --ease-out: cubic-bezier(0.05, 0.7, 0.1, 1);
+  --t-quick: 160ms;
+  --t-std: 220ms;
+}
+
+/* Night: neutral charcoal with a faint indigo bias, so indigo is reserved
+   for the primary action and the selected state, and coral for the thread
+   (popup states review, 2026-10-17). */
+@media (prefers-color-scheme: dark) {
+  :root,
+  :host {
+    color-scheme: dark;
+    --rl-paper: #16161b;
+    --rl-paper-2: #0f0f13;
+    --rl-card: #1e1e25;
+    --rl-ink: #edebf3;
+    --rl-ink-soft: #c9c6d6;
+    --rl-muted: #a3a0b5;
+    --rl-line: #2f2f39;
+    --rl-line-strong: #3e3e4a;
+    --rl-brand: #4b47d6;
+    --rl-brand-hover: #5a56e6;
+    --rl-on-brand: #ffffff;
+    --rl-brand-ink: #b4b0ff;
+    --rl-brand-soft: #2a2a40;
+    --rl-mark-stem: #8f8bf5;
+    --rl-coral: #f58a76;
+    --rl-coral-ink: #ffb4a6;
+    --rl-coral-soft: #3a2526;
+    --rl-ok: #5fd0a0;
+    --rl-danger: #ffb4ab;
+    --rl-danger-soft: #3a1f22;
+    --rl-warn: #f4c56c;
+    --rl-warn-soft: #33291c;
+    --rl-shadow: 0 1px 2px rgb(0 0 0 / 0.4);
+    --rl-shadow-pop:
+      0 1px 0 rgb(0 0 0 / 0.2), 0 18px 40px -16px rgb(0 0 0 / 0.75);
+  }
+}
+
+@theme inline {
+  --color-paper: var(--rl-paper);
+  --color-paper-2: var(--rl-paper-2);
+  --color-card: var(--rl-card);
+  --color-ink: var(--rl-ink);
+  --color-ink-soft: var(--rl-ink-soft);
+  --color-muted: var(--rl-muted);
+  --color-line: var(--rl-line);
+  --color-line-strong: var(--rl-line-strong);
+  --color-brand: var(--rl-brand);
+  --color-brand-hover: var(--rl-brand-hover);
+  --color-on-brand: var(--rl-on-brand);
+  --color-brand-ink: var(--rl-brand-ink);
+  --color-brand-soft: var(--rl-brand-soft);
+  --color-mark-stem: var(--rl-mark-stem);
+  --color-coral: var(--rl-coral);
+  --color-coral-ink: var(--rl-coral-ink);
+  --color-coral-soft: var(--rl-coral-soft);
+  --color-ok: var(--rl-ok);
+  --color-danger: var(--rl-danger);
+  --color-danger-soft: var(--rl-danger-soft);
+  --color-warn: var(--rl-warn);
+  --color-warn-soft: var(--rl-warn-soft);
+  --shadow-card: var(--rl-shadow);
+  --shadow-pop: var(--rl-shadow-pop);
+  --font-sans:
+    "Be Vietnam Pro", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --ease-std: var(--ease);
+  --ease-out-soft: var(--ease-out);
+}
+
+/* Motion: state changes only, 150–250 ms, transform/opacity. */
+@keyframes rl-enter {
+  from {
+    opacity: 0;
+    transform: translateY(3px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes rl-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes rl-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+/* The coral translation thread running along a busy control's edge. */
+@keyframes rl-thread {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(270%);
+  }
+}
+/* The usage bar slides in from the track's start (the track clips it). */
+@keyframes rl-meter {
+  from {
+    transform: translateX(-100%);
+  }
+}
+
+@utility animate-rl-enter {
+  animation: rl-enter var(--t-std) var(--ease-out) both;
+}
+@utility animate-rl-pop {
+  animation: rl-pop var(--t-std) var(--ease-out) both;
+}
+@utility animate-rl-fade {
+  animation: rl-fade var(--t-quick) var(--ease) both;
+}
+@utility animate-rl-thread {
+  animation: rl-thread 1100ms cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+@utility animate-rl-meter {
+  animation: rl-meter 600ms var(--ease-out) both;
+}
+
+/* Reduced motion: no movement. State still changes, instantly. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0s !important;
+  }
+  /* A busy thread becomes a static coral rule. */
+  [data-thread] {
+    animation: none !important;
+    transform: none !important;
+    width: 100% !important;
+  }
+}

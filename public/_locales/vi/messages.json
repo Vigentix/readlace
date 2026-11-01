@@ -1,0 +1,14 @@
+{
+  "extName": {
+    "message": "Readlace",
+    "description": "Extension name in the Chrome Web Store and the browser. Brand, never translated."
+  },
+  "extShortName": {
+    "message": "Readlace",
+    "description": "Short name (12 characters at most). Brand, never translated."
+  },
+  "extDescription": {
+    "message": "Đọc mọi thứ bằng ngôn ngữ của bạn. Readlace dịch trang web, đoạn văn đã chọn và bảng tính ngay tại chỗ, giữ nguyên bố cục.",
+    "description": "Store and extensions-page description (132 characters at most)."
+  }
+}

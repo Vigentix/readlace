@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" role="img" aria-labelledby="title desc">
+  <title id="title">Readlace icon, 16px</title>
+  <desc id="desc">An indigo stem, the layout that stays put, with one coral thread laced through it to draw the bowl and leg of an R: behind the stem at the top, over it at the waist. Hand-tuned 16-unit drawing with a heavier stroke, on a paper-white tile.</desc>
+  <rect width="16" height="16" rx="3.5" fill="#FBF7EF"/>
+  <path fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke="#F0614A" d="M2.5 4H10A3 3 0 0 1 10 10H6L13 14"/>
+  <path fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke="#2F2BA8" d="M6 2V14"/>
+  <path fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke="#F0614A" d="M8 10H6L8.24 11.28"/>
+</svg>

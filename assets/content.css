@@ -1,0 +1,41 @@
+/* Shadow root host only; no-op in the popup document.
+   rem still follows the page <html> — see WXT FAQ when overlay UI is added. */
+:host {
+  font-size: 16px;
+  line-height: 1.5;
+  color-scheme: light dark;
+}
+
+tryhand-ellipsis.tryhand-ellipsis {
+  box-sizing: border-box !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  text-indent: 0 !important;
+  list-style: none !important;
+  min-inline-size: 0 !important;
+  inline-size: var(--tryhand-inline-size) !important;
+  max-inline-size: var(--tryhand-inline-size) !important;
+  block-size: var(--tryhand-block-size) !important;
+  overflow: hidden !important;
+}
+
+tryhand-ellipsis.tryhand-ellipsis::before,
+tryhand-ellipsis.tryhand-ellipsis::after {
+  content: none !important;
+}
+
+tryhand-ellipsis.tryhand-ellipsis[data-tryhand-layout="single-line"] {
+  display: inline-block !important;
+  white-space: nowrap !important;
+  text-overflow: ellipsis !important;
+  text-align: start !important;
+  block-size: auto !important;
+}
+
+tryhand-ellipsis.tryhand-ellipsis[data-tryhand-layout="multi-line"] {
+  display: -webkit-box !important;
+  -webkit-box-orient: vertical !important;
+  -webkit-line-clamp: var(--tryhand-lines) !important;
+}

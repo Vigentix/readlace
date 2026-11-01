@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title desc">
+  <title id="title">Readlace monochrome mark</title>
+  <desc id="desc">The laced R in one colour. A gap separates the thread and the stem where one passes under the other.</desc>
+  <defs>
+    <clipPath id="top"><rect x="30" y="20" width="42" height="34"/></clipPath>
+    <clipPath id="waist"><rect x="30" y="62" width="42" height="40"/></clipPath>
+    <mask id="threadMask" maskUnits="userSpaceOnUse" x="0" y="0" width="128" height="128">
+      <rect width="128" height="128" fill="#fff"/>
+      <path fill="none" stroke-linecap="round" stroke-linejoin="round" stroke="#000" stroke-width="26" d="M51 25V103" clip-path="url(#top)"/>
+    </mask>
+    <mask id="stemMask" maskUnits="userSpaceOnUse" x="0" y="0" width="128" height="128">
+      <rect width="128" height="128" fill="#fff"/>
+      <path fill="none" stroke-linecap="round" stroke-linejoin="round" stroke="#000" stroke-width="26" d="M67 75H51L66.36 83.96" clip-path="url(#waist)"/>
+    </mask>
+  </defs>
+  <path fill="none" stroke-linecap="round" stroke-linejoin="round" stroke="currentColor" stroke-width="16" d="M29 37H77A19 19 0 0 1 77 75H51L99 103" mask="url(#threadMask)"/>
+  <path fill="none" stroke-linecap="round" stroke-linejoin="round" stroke="currentColor" stroke-width="16" d="M51 25V103" mask="url(#stemMask)"/>
+  <path fill="none" stroke-linecap="round" stroke-linejoin="round" stroke="currentColor" stroke-width="16" d="M67 75H51L66.36 83.96"/>
+</svg>

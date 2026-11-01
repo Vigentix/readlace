@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Selection translation fixture</title>
+    <style>
+      html {
+        font-size: 10px;
+      }
+      body {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        width: min(720px, calc(100% - 32px));
+        min-height: 1800px;
+        margin: 16px auto;
+        color: #172033;
+        font:
+          16px/1.6 system-ui,
+          sans-serif;
+      }
+      section {
+        margin: 24px 0;
+      }
+      #multiline {
+        width: 280px;
+      }
+      #clipped {
+        width: 260px;
+        overflow: hidden;
+        transform: translateX(18px);
+        white-space: nowrap;
+      }
+      #near-edge {
+        width: 240px;
+        margin-top: 1050px;
+        margin-left: auto;
+        text-align: right;
+      }
+      iframe {
+        width: 100%;
+        height: 120px;
+      }
+      button,
+      select {
+        width: 1px !important;
+        color: magenta !important;
+        background: magenta !important;
+      }
+    </style>
+  </head>
+  <body>
+    <header id="grid-peer">Stable grid sibling</header>
+    <main>
+      <h1>権限チェック</h1>
+      <p id="dblclick-initial">
+        <span id="dblclick-initial-word">Bootstrapword</span> selection proof.
+      </p>
+      <p id="dblclick-mounted">
+        <span id="dblclick-mounted-word">Mountedword</span> selection proof.
+      </p>
+      <section id="stopped-propagation-region">
+        <p id="stopped-propagation-first">
+          First readable selection survives a page pointerup bubble stop.
+        </p>
+        <p id="stopped-propagation-next">
+          Subsequent readable selection survives the same page handler.
+        </p>
+      </section>
+      <p id="source">
+        Permission check:
+        <span>When updating or accessing data, be aware of </span
+        ><strong>any data that has restricted access.</strong>
+      </p>
+      <p id="multiline">
+        Forward and backward selection crosses <em>nested inline markup</em> and
+        continues onto a second rendered line.
+      </p>
+      <p id="editable-intersection">
+        Readable prefix
+        <span contenteditable="true">editable words</span> readable suffix.
+      </p>
+      <div id="editable-ancestor" contenteditable="true">
+        <span id="island-start" contenteditable="false">Readable island A</span>
+        editable bridge
+        <span id="island-end" contenteditable="false">Readable island B</span>
+      </div>
+      <input id="input" value="Editable input must never be translated" />
+      <textarea id="textarea">
+Editable textarea must never be translated</textarea>
+      <div id="editor" contenteditable="true">
+        Editable rich text must never be translated
+      </div>
+      <p id="clipped">
+        Transformed and clipped readable selection remains eligible.
+      </p>
+      <p id="delayed">
+        Delayed selection response must not overwrite a newer selection.
+      </p>
+      <p id="keyboard" tabindex="0">Keyboard proof text remains readable.</p>
+      <p id="bfcache-text">BFCache return selection remains available.</p>
+      <div id="shadow-selection-host"></div>
+      <p id="near-edge">
+        Viewport edge selection produces a clamped panel with an internally
+        scrollable result.
+      </p>
+      <div id="frame-slot"></div>
+    </main>
+    <script>
+      window.outsideSelectionPopupInsertions = 0;
+      new MutationObserver((records) => {
+        for (const record of records) {
+          for (const node of record.addedNodes) {
+            if (
+              node instanceof Element &&
+              (node.matches('[role="listbox"]') ||
+                node.querySelector('[role="listbox"]'))
+            ) {
+              window.outsideSelectionPopupInsertions += 1;
+            }
+          }
+        }
+      }).observe(document.body, { childList: true, subtree: true });
+      const shadowSelectionRoot = document
+        .querySelector("#shadow-selection-host")
+        .attachShadow({ mode: "open" });
+      const shadowSelectionText = document.createElement("p");
+      shadowSelectionText.id = "shadow-selection-text";
+      shadowSelectionText.textContent =
+        "Shadow-root text must not load selection translation.";
+      shadowSelectionRoot.append(shadowSelectionText);
+      window.stoppedPropagationEvidence = {
+        cancelBubbleBeforeStop: false,
+        count: 0,
+        defaultPrevented: false,
+      };
+      document
+        .querySelector("#stopped-propagation-region")
+        .addEventListener("pointerup", (event) => {
+          window.stoppedPropagationEvidence.count += 1;
+          window.stoppedPropagationEvidence.cancelBubbleBeforeStop =
+            event.cancelBubble;
+          window.stoppedPropagationEvidence.defaultPrevented =
+            event.defaultPrevented;
+          event.stopPropagation();
+        });
+      const frame = document.createElement("iframe");
+      frame.title = "Injected selection frame";
+      frame.src = "/frame";
+      document.querySelector("#frame-slot").append(frame);
+    </script>
+  </body>
+</html>

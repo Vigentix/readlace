@@ -1,0 +1,12 @@
+@import "tailwindcss";
+
+@layer base {
+  /* https://base-ui.com/react/overview/quick-start */
+  body {
+    position: relative;
+  }
+
+  #root {
+    isolation: isolate;
+  }
+}

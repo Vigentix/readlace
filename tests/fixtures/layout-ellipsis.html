@@ -1,0 +1,1065 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Layout stability fixture</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        color: #111;
+        font:
+          16px/1.25 Arial,
+          sans-serif;
+      }
+      main {
+        margin: 24px auto;
+        max-width: 760px;
+        padding: 0 16px;
+      }
+      section {
+        margin-block: 24px;
+      }
+      [data-layout-probe] {
+        border: 1px solid #ccd;
+      }
+      .single-row {
+        gap: 12px;
+        max-width: 220px;
+      }
+      .flex-row {
+        display: flex;
+      }
+      .grid-row {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .float-row {
+        overflow: hidden;
+      }
+      .float-row button {
+        float: left;
+      }
+      .single-row button {
+        max-width: 100%;
+        min-width: 0;
+      }
+      .bounded-auto-nav {
+        width: 240px;
+      }
+      .bounded-auto-nav ul {
+        display: flex;
+        flex-wrap: wrap;
+        font-size: 12px;
+        line-height: 20px;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      .bounded-auto-nav li {
+        flex: 0 0 auto;
+      }
+      .bounded-auto-nav a {
+        color: inherit;
+        display: block;
+        padding-inline: 6px;
+        text-decoration: none;
+        white-space: normal;
+      }
+      .bounded-fixed-list {
+        font-size: 12px;
+        line-height: 20px;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      .bounded-fixed-list li {
+        width: 123px;
+      }
+      .bounded-fixed-list a {
+        color: inherit;
+        display: block;
+        text-decoration: none;
+        white-space: normal;
+      }
+      .clipped-capacity-cell {
+        font-size: 12px;
+        line-height: 20px;
+        width: 123px;
+      }
+      .clipped-capacity-boundary {
+        display: block;
+        overflow: hidden;
+        width: 61px;
+      }
+      .clipped-capacity-boundary a {
+        color: inherit;
+        display: block;
+        text-decoration: none;
+        white-space: nowrap;
+      }
+      .lazy-scroll-fixture {
+        font-size: 16px;
+        line-height: 24px;
+      }
+      .lazy-scroll-gap {
+        height: 1100px;
+      }
+      .lazy-scroll-piece {
+        max-width: 280px;
+      }
+      .cards {
+        display: grid;
+        gap: 12px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      .card {
+        min-width: 0;
+        padding: 10px;
+      }
+      .card a {
+        color: inherit;
+        display: block;
+        text-decoration: none;
+      }
+      .card h2 {
+        font-size: 16px;
+        line-height: 20px;
+        margin: 0;
+      }
+      .block-anchor-nav {
+        max-width: 220px;
+      }
+      .block-anchor-nav ul {
+        display: flex;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      .block-anchor-nav a {
+        color: inherit;
+        display: block;
+        font-size: 12px;
+        line-height: 26.4px;
+        text-decoration: none;
+        white-space: nowrap;
+      }
+      article {
+        max-width: 360px;
+      }
+      .rtl {
+        direction: rtl;
+        max-width: 220px;
+      }
+      .responsive {
+        max-width: 100%;
+        width: 320px;
+      }
+      .responsive button {
+        max-width: 100%;
+      }
+      .compatibility-row button:has(> tryhand-ellipsis.tryhand-ellipsis),
+      .compatibility-row
+        .batch-repair-trigger:has(> tryhand-ellipsis.tryhand-ellipsis) {
+        padding-block-end: 8px;
+      }
+      .hostile-icon-nav {
+        max-width: 700px;
+      }
+      .hostile-icon-nav a {
+        color: inherit;
+        display: block;
+        font-size: 16px;
+        line-height: 26.4px;
+        position: relative;
+        text-decoration: none;
+        white-space: nowrap;
+      }
+      .hostile-icon-nav a > :not(.host-icon) {
+        background: #f0c;
+        border: 3px solid #0c9;
+        list-style: inside square;
+        margin-inline-start: 12px;
+        padding-inline-start: 14px;
+        text-indent: 10px;
+      }
+      .hostile-icon-nav a span::before {
+        content: "◆";
+      }
+      .hostile-icon-nav .host-icon {
+        inset-inline-end: 0;
+        position: absolute;
+      }
+      .dropdown-capacity {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        width: 150px;
+      }
+      .dropdown-capacity li {
+        width: 123px;
+      }
+      .dropdown-capacity a {
+        color: inherit;
+        display: block;
+        font-size: 12px;
+        line-height: 20px;
+        text-decoration: none;
+        white-space: nowrap;
+      }
+      .hover-menu-capacity {
+        display: inline-block;
+        position: relative;
+      }
+      .hover-menu-trigger {
+        color: inherit;
+        display: inline-block;
+        font-size: 12px;
+        line-height: 20px;
+        text-decoration: none;
+        white-space: nowrap;
+        width: 180px;
+      }
+      .hover-menu-trigger::after {
+        border-block-end: 2px solid currentColor;
+        border-inline-end: 2px solid currentColor;
+        content: "";
+        display: inline-block;
+        height: 6px;
+        margin-inline-start: 4px;
+        transform: rotate(45deg);
+        vertical-align: 3px;
+        width: 6px;
+      }
+      .hover-menu-icon {
+        display: inline-block;
+        height: 12px;
+        margin-inline-start: 4px;
+        vertical-align: middle;
+        width: 12px;
+      }
+      .hover-menu-items {
+        background: #fff;
+        display: none;
+        left: 0;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        position: absolute;
+        top: 100%;
+        width: 150px;
+      }
+      .hover-menu-capacity:hover .hover-menu-items {
+        display: block;
+      }
+      .hover-menu-capacity[data-layout-open] .hover-menu-items {
+        display: block;
+      }
+      .hover-menu-items li {
+        width: 123px;
+      }
+      .hover-menu-items a {
+        color: inherit;
+        display: block;
+        font-size: 12px;
+        line-height: 20px;
+        text-decoration: none;
+        white-space: nowrap;
+      }
+      .unsafe-capacity-nav ul {
+        display: flex;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      .unsafe-capacity-nav li {
+        width: 123px;
+        white-space: nowrap;
+      }
+      .unsafe-capacity-nav a {
+        color: inherit;
+        display: inline-block;
+        font-size: 12px;
+        line-height: 20px;
+        text-decoration: none;
+        white-space: nowrap;
+      }
+      .unsafe-capacity-nav .nav-icon {
+        display: inline-block;
+        margin-inline-start: 4px;
+      }
+      .flex-icon-layout {
+        display: grid;
+        grid-template-columns: 168px minmax(0, 1fr);
+        width: 360px;
+      }
+      .flex-icon-cell {
+        display: flex;
+        min-width: 0;
+        padding-inline: 8px;
+        white-space: nowrap;
+      }
+      .flex-icon-cell .fixture-icon {
+        flex: 0 0 20px;
+      }
+      .flex-icon-cell a {
+        color: inherit;
+        display: block;
+        flex: 1 1 auto;
+        min-width: 0;
+        text-decoration: none;
+      }
+      .flex-icon-adjacent {
+        border-inline-start: 1px solid #ccd;
+        padding-inline-start: 8px;
+      }
+      .batch-isolation-cell {
+        display: flex;
+        font-size: 12px;
+        line-height: 20px;
+        min-width: 0;
+        white-space: nowrap;
+        width: 180px;
+      }
+      .batch-isolation-cell a {
+        color: inherit;
+        display: block;
+        min-width: 0;
+        text-decoration: none;
+      }
+      .batch-repair-trigger {
+        flex: 0 0 80px;
+      }
+      .batch-isolation-icon {
+        flex: 0 0 20px;
+      }
+      .batch-fit-text {
+        flex: 1 1 auto;
+      }
+      .inline-sibling-owner-nav {
+        font-size: 12px;
+        line-height: 20px;
+        white-space: nowrap;
+        width: 360px;
+      }
+      .inline-sibling-owner-nav a {
+        color: inherit;
+        display: inline-block;
+        text-decoration: none;
+        vertical-align: top;
+        white-space: normal;
+      }
+      .inline-sibling-owner-nav a + a {
+        margin-inline-start: 12px;
+      }
+      .nested-sibling-list {
+        font-size: 12px;
+        line-height: 20px;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        width: 180px;
+      }
+      .nested-sibling-list a {
+        color: inherit;
+        display: block;
+        text-decoration: none;
+        white-space: nowrap;
+        width: 180px;
+      }
+      .nested-sibling-label {
+        display: inline;
+      }
+      .nested-sibling-icon {
+        display: inline-block;
+        width: 20px;
+      }
+      .article-sidebar-grid {
+        display: grid;
+        gap: 24px;
+        grid-template-columns: minmax(0, 2fr) minmax(120px, 1fr);
+      }
+      .article-flex-column {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .article-flex-column p {
+        margin: 0;
+      }
+      .incompatible {
+        display: contents;
+      }
+      .translation-first-row {
+        align-items: center;
+        display: flex;
+        gap: 6px;
+        line-height: 20px;
+        padding-inline: 8px;
+        white-space: nowrap;
+        width: 180px;
+      }
+      .translation-first-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      .translation-first-row a {
+        color: inherit;
+        display: block;
+        flex: 1 1 auto;
+        min-width: 0;
+        text-decoration: none;
+      }
+      .translation-first-chrome {
+        flex: 0 0 20px;
+      }
+      .translation-first-suffix {
+        flex: 0 0 auto;
+      }
+      .translation-first-card {
+        line-height: 20px;
+        width: 170px;
+      }
+      .translation-first-card h2 {
+        font-size: 16px;
+        line-height: 20px;
+        margin: 0;
+      }
+      .gap-capacity-row {
+        align-items: center;
+        display: flex;
+        gap: 8px;
+        line-height: 20px;
+        padding-inline: 10px;
+        white-space: nowrap;
+        width: 180px;
+      }
+      .gap-capacity-row a {
+        color: inherit;
+        display: block;
+        flex: 1 1 auto;
+        min-width: 0;
+        text-decoration: none;
+      }
+      .gap-capacity-icon,
+      .gap-capacity-suffix {
+        flex: 0 0 20px;
+      }
+      .unbreakable-card {
+        line-height: 20px;
+        width: 150px;
+      }
+      .unbreakable-card h2 {
+        font-size: 16px;
+        line-height: 20px;
+        margin: 0;
+      }
+      .stretched-icon-text-row {
+        max-width: 280px;
+        min-width: 0;
+        width: 280px;
+      }
+      .stretched-icon-text-row button {
+        align-items: center;
+        background: transparent;
+        border: 0;
+        color: inherit;
+        display: flex;
+        font: inherit;
+        gap: 8px;
+        max-width: 100%;
+        min-width: 0;
+        padding: 0;
+        white-space: nowrap;
+        width: 100%;
+      }
+      .stretched-icon-text-icon {
+        flex: 0 0 24px;
+        height: 24px;
+        line-height: 24px;
+        text-align: center;
+        width: 24px;
+      }
+      .stretched-icon-text-label {
+        color: inherit;
+        display: block;
+        flex: 1 1 auto;
+        min-width: 0;
+        white-space: nowrap;
+      }
+      .shrink-fit-action-group {
+        display: flex;
+        gap: 8px;
+        width: max-content;
+      }
+      .shrink-fit-action-group button {
+        color: inherit;
+        flex: 0 0 auto;
+        font: inherit;
+        padding-block: 4px;
+        padding-inline: 6px;
+        white-space: nowrap;
+      }
+      .hugging-sidebar {
+        width: 260px;
+        border: 1px solid #ccc;
+      }
+      .hugging-sidebar a {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 8px 12px;
+        color: inherit;
+        text-decoration: none;
+      }
+      .hugging-sidebar .hug-icon {
+        flex: none;
+        width: 18px;
+        height: 18px;
+        background: #999;
+      }
+      .hugging-sidebar .hug-label {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      @media (max-width: 520px) {
+        .cards {
+          grid-template-columns: minmax(0, 1fr);
+        }
+        .responsive {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <section aria-label="single-line controls">
+        <div class="single-row flex-row" data-layout-probe="flex-single">
+          <button>Open account</button>
+        </div>
+        <div class="single-row grid-row" data-layout-probe="grid-single">
+          <button>Manage subscriptions</button>
+        </div>
+        <div class="single-row float-row" data-layout-probe="float-single">
+          <button>View delivery options</button>
+        </div>
+        <div class="single-row rtl" data-layout-probe="rtl-single">
+          <button>Settings and notifications</button>
+        </div>
+        <div
+          class="single-row responsive"
+          data-layout-probe="responsive-single"
+        >
+          <button>Review your current order</button>
+        </div>
+        <div
+          class="single-row compatibility-row flex-row"
+          contenteditable="true"
+        >
+          <button data-layout-probe="bounded-source-fallback">
+            Incompatible bounded
+          </button>
+        </div>
+      </section>
+
+      <section aria-label="bounded navigation no-wrap">
+        <nav
+          class="bounded-auto-nav"
+          aria-label="Auto-width fixture navigation"
+        >
+          <ul data-layout-probe="bounded-navigation-no-wrap">
+            <li>
+              <a href="#auto-news" data-layout-probe="bounded-nav-item-news"
+                >Auto news</a
+              >
+            </li>
+            <li>
+              <a href="#auto-world" data-layout-probe="bounded-nav-item-world"
+                >Auto world</a
+              >
+            </li>
+            <li>
+              <a href="#auto-sports" data-layout-probe="bounded-nav-item-sports"
+                >Auto sports</a
+              >
+            </li>
+          </ul>
+        </nav>
+      </section>
+
+      <section aria-label="bounded fixed-cell capacity">
+        <ul class="bounded-fixed-list" aria-label="Fixed-cell fixture menu">
+          <li data-layout-probe="bounded-fixed-cell">
+            <a href="#fixed-fit">Fixed menu</a>
+          </li>
+          <li data-layout-probe="bounded-fixed-overflow">
+            <a href="#fixed-overflow">Fixed overflow</a>
+          </li>
+        </ul>
+      </section>
+
+      <section aria-label="clipped capacity boundary" contenteditable="true">
+        <div
+          class="clipped-capacity-cell"
+          data-layout-probe="clipped-capacity-cell"
+        >
+          <div class="clipped-capacity-boundary">
+            <a
+              href="#clipped-capacity"
+              data-layout-probe="clipped-capacity-text"
+              >Go</a
+            >
+          </div>
+        </div>
+      </section>
+
+      <section aria-label="block-anchor navigation">
+        <nav class="block-anchor-nav" aria-label="Fixture navigation">
+          <ul>
+            <li>
+              <a href="#nav" data-layout-probe="block-anchor-nav"
+                >Regional health updates</a
+              >
+            </li>
+          </ul>
+        </nav>
+      </section>
+
+      <section aria-label="hostile icon navigation">
+        <nav class="hostile-icon-nav" aria-label="Hostile fixture navigation">
+          <a href="#hostile" data-layout-probe="hostile-icon-nav"
+            >Brief regional update<span
+              class="host-icon"
+              aria-hidden="true"
+              contenteditable="true"
+              >▼</span
+            ></a
+          >
+        </nav>
+      </section>
+
+      <section aria-label="stable dropdown capacity">
+        <ul class="dropdown-capacity" aria-label="Fixture dropdown">
+          <li data-layout-probe="dropdown-item-en">
+            <a href="#dropdown" data-layout-probe="dropdown-capacity"
+              >Menu item</a
+            >
+          </li>
+          <li data-layout-probe="dropdown-item-vi">
+            <a href="#dropdown-vi">Mục menu tiếng Việt</a>
+          </li>
+          <li data-layout-probe="dropdown-item-ja">
+            <a href="#dropdown-ja">日本語メニュー</a>
+          </li>
+          <li data-layout-probe="dropdown-item-overflow">
+            <a href="#dropdown-overflow">Long hover menu label</a>
+          </li>
+        </ul>
+      </section>
+
+      <section aria-label="hover menu capacity">
+        <nav class="hover-menu-capacity" data-layout-probe="hover-menu">
+          <a
+            class="hover-menu-trigger"
+            data-layout-probe="hover-menu-trigger"
+            href="#hover-trigger"
+            >Hover menu trigger<svg
+              class="hover-menu-icon"
+              data-layout-probe="hover-menu-icon"
+              contenteditable="true"
+              viewBox="0 0 12 12"
+              aria-hidden="true"
+            >
+              <path d="M1 3h10L6 9z" fill="currentColor" /></svg
+          ></a>
+          <ul class="hover-menu-items" aria-label="Fixture hover menu">
+            <li data-layout-probe="hover-menu-item-en">
+              <a href="#hover-en">English hover item</a>
+            </li>
+            <li data-layout-probe="hover-menu-item-vi">
+              <a href="#hover-vi">Mục menu tiếng Việt</a>
+            </li>
+            <li data-layout-probe="hover-menu-item-ja">
+              <a href="#hover-ja">日本語メニュー</a>
+            </li>
+            <li data-layout-probe="hover-menu-item-overflow">
+              <a href="#hover-overflow">Long hover menu label</a>
+            </li>
+          </ul>
+        </nav>
+      </section>
+
+      <section aria-label="unsafe navigation capacity">
+        <nav class="unsafe-capacity-nav" aria-label="Unsafe fixture navigation">
+          <ul>
+            <li>
+              <a href="#unsafe" data-layout-probe="unsafe-capacity-nav"
+                >Menu item</a
+              ><span
+                class="nav-icon"
+                data-layout-probe="unsafe-nav-icon"
+                contenteditable="true"
+                >▼</span
+              >
+            </li>
+            <li data-layout-probe="unsafe-nav-sibling" contenteditable="true">
+              Next item
+            </li>
+          </ul>
+        </nav>
+      </section>
+
+      <section aria-label="flex icon capacity">
+        <div class="flex-icon-layout">
+          <div class="flex-icon-cell" data-layout-probe="flex-icon-cell">
+            <span
+              class="fixture-icon"
+              data-layout-probe="flex-icon"
+              aria-hidden="true"
+              contenteditable="true"
+              >■</span
+            ><a href="#flex-icon" data-layout-probe="flex-icon-text"
+              >Long hover menu label</a
+            >
+          </div>
+          <aside class="flex-icon-adjacent" contenteditable="true">
+            Adjacent column
+          </aside>
+        </div>
+      </section>
+
+      <section
+        aria-label="translation batch isolation"
+        data-layout-probe="batch-isolation"
+      >
+        <div
+          class="batch-isolation-cell compatibility-row"
+          data-layout-probe="batch-isolation-cell"
+        >
+          <a
+            class="batch-repair-trigger"
+            data-layout-probe="batch-repair-trigger"
+            href="#batch-repair"
+            >Repair trigger</a
+          ><span
+            aria-hidden="true"
+            class="batch-isolation-icon"
+            data-layout-probe="batch-isolation-icon"
+            contenteditable="true"
+            >■</span
+          ><a
+            class="batch-fit-text"
+            data-layout-probe="batch-fit-text"
+            href="#batch-fit"
+            >FAQ</a
+          >
+        </div>
+      </section>
+
+      <section aria-label="repeated cards">
+        <ul class="cards" data-layout-probe="card-list">
+          <li class="card" data-layout-probe="card-teaser">
+            <a href="#one"
+              ><h2>Compact reusable endoscope improves treatment access</h2></a
+            >
+          </li>
+          <li class="card">
+            <a href="#two"
+              ><h2>Community health service opens a new clinic</h2></a
+            >
+          </li>
+        </ul>
+        <ul class="cards" data-layout-probe="block-link-list">
+          <li class="card" data-layout-probe="block-link">
+            <a href="#three"
+              >Read the full report from the regional care team</a
+            >
+          </li>
+          <li class="card">
+            <a href="#four">See more reporting about local health services</a>
+          </li>
+        </ul>
+      </section>
+
+      <article data-layout-probe="article-body">
+        <p>
+          Long-form article text must stay readable when Vietnamese translation
+          needs more room than the original sentence.
+        </p>
+        <p data-layout-probe="inline-link">
+          This paragraph keeps an <a href="#inline">inline reference link</a> in
+          normal readable flow.
+        </p>
+      </article>
+
+      <section
+        class="article-sidebar-grid"
+        data-layout-probe="article-grid-layout"
+      >
+        <article class="article-flex-column">
+          <p data-layout-probe="article-grid-body">
+            Ordinary article body text in a grid and flex layout must remain
+            readable after translation.
+          </p>
+          <p>
+            A neighboring article paragraph must not turn the body into a card
+            or teaser.
+          </p>
+        </article>
+        <aside>Related links and sidebar content.</aside>
+      </section>
+
+      <section class="incompatible" data-layout-probe="incompatible">
+        <p>
+          This deliberately unsupported host must fail open to readable flow.
+        </p>
+      </section>
+
+      <section aria-label="inline sibling anchor ownership">
+        <nav
+          class="inline-sibling-owner-nav"
+          data-layout-probe="inline-sibling-owner-row"
+        >
+          <a href="#inline-owner" data-layout-probe="inline-sibling-owner"
+            >Inline alpha</a
+          ><a
+            href="#inline-peer"
+            data-layout-probe="inline-sibling-peer"
+            contenteditable="true"
+            >Inline beta</a
+          >
+        </nav>
+      </section>
+
+      <section aria-label="nested sibling ownership">
+        <ul class="nested-sibling-list">
+          <li data-layout-probe="nested-sibling-row">
+            <a href="#nested-sibling">
+              <span
+                class="nested-sibling-label"
+                data-layout-probe="nested-sibling-label"
+                >Nested label</span
+              >
+              /
+              <span
+                class="nested-sibling-icon"
+                data-layout-probe="nested-sibling-icon"
+                contenteditable="true"
+                >■</span
+              >
+              ·
+            </a>
+          </li>
+        </ul>
+      </section>
+
+      <section id="spa-root" aria-label="SPA mutations">
+        <button data-layout-probe="spa-replaced">
+          Replace this interactive label
+        </button>
+        <p id="moved-text-host" data-layout-probe="moved-text-host">
+          Host-owned moved text:
+        </p>
+      </section>
+      <section
+        aria-label="delayed provider scroll fixture"
+        class="lazy-scroll-fixture"
+        data-layout-probe="delayed-provider-scroll"
+        contenteditable="true"
+      >
+        <p class="lazy-scroll-piece" data-layout-probe="delayed-provider-first">
+          Delayed provider first record
+        </p>
+        <div class="lazy-scroll-gap" aria-hidden="true"></div>
+        <p
+          class="lazy-scroll-piece"
+          data-layout-probe="delayed-provider-second"
+        >
+          Delayed provider second record
+        </p>
+      </section>
+      <section
+        aria-label="dynamic added nodes"
+        data-layout-probe="dynamic-added-nodes"
+        contenteditable="true"
+      ></section>
+      <section
+        aria-label="stale multi-text response"
+        data-layout-probe="stale-multi-text"
+        contenteditable="true"
+      >
+        <p>
+          <span data-layout-probe="stale-multi-kept">Stale multi node kept</span
+          ><span data-layout-probe="stale-multi-detached"
+            >Stale multi node detached</span
+          >
+        </p>
+      </section>
+      <section
+        aria-label="dynamic character data"
+        data-layout-probe="dynamic-character-data"
+        contenteditable="true"
+      >
+        <span data-layout-probe="dynamic-character-target"> </span>
+      </section>
+      <section
+        aria-label="overlapping translation starts"
+        data-layout-probe="overlap-starts"
+        contenteditable="true"
+      >
+        <p data-layout-probe="overlap-source">Overlap scheduler source</p>
+      </section>
+      <section aria-label="gap and unbreakable layout" contenteditable="true">
+        <div class="gap-capacity-row" data-layout-probe="gap-capacity-row">
+          <span class="gap-capacity-icon" contenteditable="true">■</span
+          ><a href="#gap-capacity" data-layout-probe="gap-capacity-text"
+            >Gap capacity source</a
+          ><span class="gap-capacity-suffix" contenteditable="true">›</span>
+        </div>
+        <article
+          class="unbreakable-card"
+          data-layout-probe="unbreakable-multi-card"
+        >
+          <a href="#unbreakable-multi"
+            ><h2 data-layout-probe="unbreakable-multi-text">
+              Unbreakable multi source
+            </h2></a
+          >
+        </article>
+      </section>
+      <section
+        aria-label="translation-first retention"
+        data-layout-probe="translation-first-retention"
+        contenteditable="true"
+      >
+        <article>
+          <p data-layout-probe="translation-first-flow">
+            Translation first flow
+          </p>
+        </article>
+        <nav aria-label="Translation-first fixture navigation">
+          <ul class="translation-first-list">
+            <li
+              class="translation-first-row"
+              data-layout-probe="translation-first-fit-row"
+            >
+              <span
+                class="translation-first-chrome"
+                data-layout-probe="translation-first-fit-icon"
+                contenteditable="true"
+                >■</span
+              ><a
+                href="#translation-first-fit"
+                data-layout-probe="translation-first-fit"
+                >Translation first fit</a
+              ><span class="translation-first-suffix" contenteditable="true"
+                >›</span
+              >
+            </li>
+          </ul>
+        </nav>
+        <ul class="cards">
+          <li
+            class="card translation-first-card"
+            data-layout-probe="translation-first-multiline"
+          >
+            <a href="#translation-first-multiline"
+              ><h2>Translation first story headline</h2></a
+            >
+          </li>
+        </ul>
+        <div
+          class="translation-first-row compatibility-row"
+          data-layout-probe="translation-first-group-alpha"
+        >
+          <a href="#translation-first-alpha">Translation group alpha</a>
+        </div>
+        <div
+          class="translation-first-row"
+          data-layout-probe="translation-first-group-beta"
+        >
+          <a href="#translation-first-beta">Translation group beta</a>
+        </div>
+        <p data-layout-probe="translation-first-success-slot">
+          Translation first successful slot
+        </p>
+        <p data-layout-probe="translation-first-transient">
+          Translation first transient slot
+        </p>
+        <p data-layout-probe="translation-first-nonretryable">
+          Translation first nonretryable slot
+        </p>
+        <div data-layout-probe="translation-first-dynamic"></div>
+      </section>
+      <section
+        aria-label="dedicated vs shrink-fit capacity"
+        data-layout-probe="dedicated-shrink-fit-capacity"
+        contenteditable="true"
+      >
+        <div
+          class="stretched-icon-text-row"
+          data-layout-probe="stretched-icon-text-fit"
+        >
+          <button type="button">
+            <span
+              class="stretched-icon-text-icon"
+              data-layout-probe="stretched-icon-text-fit-icon"
+              contenteditable="true"
+              >■</span
+            ><span class="stretched-icon-text-label">請求書</span>
+          </button>
+        </div>
+        <div
+          class="stretched-icon-text-row"
+          data-layout-probe="stretched-icon-text-overflow"
+        >
+          <button type="button">
+            <span
+              class="stretched-icon-text-icon"
+              data-layout-probe="stretched-icon-text-overflow-icon"
+              contenteditable="true"
+              >■</span
+            ><span class="stretched-icon-text-label">支払履歴</span>
+          </button>
+        </div>
+        <div
+          class="shrink-fit-action-group"
+          data-layout-probe="shrink-fit-action-group"
+        >
+          <button type="button" data-layout-probe="shrink-fit-action-host">
+            新規
+          </button>
+          <button
+            type="button"
+            data-layout-probe="shrink-fit-action-peer"
+            contenteditable="true"
+          >
+            Save
+          </button>
+        </div>
+      </section>
+
+      <section aria-label="hugging truncate sidebar">
+        <nav class="hugging-sidebar" aria-label="Hugging sidebar fixture">
+          <a href="#hug-fit" data-layout-probe="hug-truncate-fit"
+            ><span class="hug-icon" contenteditable="true"></span
+            ><span class="hug-label">納品書一覧</span></a
+          >
+          <a href="#hug-overflow" data-layout-probe="hug-truncate-overflow"
+            ><span class="hug-icon" contenteditable="true"></span
+            ><span class="hug-label">連絡メモ</span></a
+          >
+        </nav>
+      </section>
+    </main>
+  </body>
+</html>

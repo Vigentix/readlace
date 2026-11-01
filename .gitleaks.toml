@@ -1,0 +1,11 @@
+# Secret scanning for this repository: `gitleaks dir .` (or `gitleaks git`).
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Obviously fake keys used by tests and fixtures"
+paths = [
+  '''(^|/)tests/''',
+  '''(^|/)e2e/''',
+  '''\.test\.tsx?$''',
+]

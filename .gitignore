@@ -1,0 +1,39 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+node_modules
+.output
+.wxt
+web-ext.config.ts
+web-ext-artifacts
+stats.html
+stats-*.json
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea
+.DS_Store
+*.sw?
+
+# Local agent tooling
+.agents
+.scratch
+.claude
+skills-lock.json
+
+# Env
+.env
+.env.local
+.env.*.local
+
+# Test artifacts
+coverage
+playwright-report
+test-results
+blob-report
+output

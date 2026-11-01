@@ -1,0 +1,53 @@
+name: Bug report
+description: Something does not translate, looks broken or behaves unexpectedly.
+labels: ["needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting. **Never paste your API key.** For security problems,
+        use private vulnerability reporting instead (see SECURITY.md).
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What you did, what you expected, and what you saw instead.
+    validations:
+      required: true
+  - type: input
+    id: page
+    attributes:
+      label: Page or file
+      description: A public URL, or a description of the page or spreadsheet. Do not share confidential content.
+  - type: dropdown
+    id: engine
+    attributes:
+      label: Translation engine
+      options:
+        - My OpenAI API key
+        - On-device (no key)
+        - Not sure
+    validations:
+      required: true
+  - type: input
+    id: browser
+    attributes:
+      label: Browser and version
+      placeholder: Chrome 140.0.7339.80 (macOS)
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Readlace version
+      description: From chrome://extensions, or the commit if you built it yourself.
+  - type: textarea
+    id: diagnostics
+    attributes:
+      label: Diagnostics
+      description: In Readlace, open Settings, press **Copy diagnostics** and paste here. It contains no key, page text or URLs.
+      render: json
+  - type: textarea
+    id: extra
+    attributes:
+      label: Screenshots or other details

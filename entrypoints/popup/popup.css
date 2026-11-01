@@ -1,0 +1,20 @@
+/*
+ * Readlace popup visual system (ui-enhancement Decision 6, direction A
+ * "Folio"): light paper with an indigo primary in light mode, Loom night
+ * tones in dark mode. Tokens, motion and fonts are shared with the Reader and
+ * the selection panel (`assets/ui-tokens.css`, `assets/ui-fonts.css`).
+ */
+@import "../../assets/tailwind.css";
+@import "../../assets/ui-fonts.css";
+@import "../../assets/ui-tokens.css";
+
+@layer base {
+  html,
+  body {
+    background-color: var(--rl-paper);
+    color: var(--rl-ink);
+  }
+  body {
+    -webkit-font-smoothing: antialiased;
+  }
+}

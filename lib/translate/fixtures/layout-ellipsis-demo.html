@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Layout ellipsis demo</title>
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        padding: 24px;
+        max-width: 720px;
+      }
+      h2 {
+        margin-top: 2rem;
+      }
+      .row {
+        display: flex;
+        gap: 8px;
+        width: 260px;
+        border: 1px solid #ccc;
+        padding: 8px;
+      }
+      .truncate {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        min-width: 0;
+        flex: 1;
+      }
+      button.narrow {
+        width: 120px;
+      }
+      nav {
+        display: flex;
+        width: 200px;
+        border: 1px solid #ccc;
+      }
+      nav a {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        display: block;
+        padding: 8px;
+        flex: 1;
+        min-width: 0;
+      }
+      p.wrap {
+        width: 280px;
+        border: 1px solid #ccc;
+        padding: 8px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Layout / ellipsis manual verify</h1>
+    <p>
+      Open this file in Chrome with the extension loaded, click Translate, then
+      check each case below.
+    </p>
+
+    <h2>1. Button with nested span (should ellipsis)</h2>
+    <button class="narrow" type="button">
+      <span>Save changes now</span>
+    </button>
+
+    <h2>2. Flex row + truncate class (should ellipsis)</h2>
+    <div class="row">
+      <span class="truncate">Dashboard overview settings</span>
+    </div>
+
+    <h2>3. Nav link with nested text (should ellipsis)</h2>
+    <nav>
+      <a href="#"><span>Product documentation</span></a>
+    </nav>
+
+    <h2>4. Paragraph (should wrap, no ellipsis wrapper)</h2>
+    <p class="wrap">
+      This paragraph should wrap to multiple lines when translated text is
+      longer than the source and must not get a tryhand-ellipsis wrapper.
+    </p>
+
+    <h2>5. Direct button text (should ellipsis)</h2>
+    <button class="narrow" type="button">Publish article</button>
+  </body>
+</html>

@@ -1,0 +1,20 @@
+Readlace
+Copyright 2026 Vigentix
+
+This product is licensed under the Apache License, Version 2.0 (see LICENSE).
+
+"Readlace" and the Readlace logo are trademarks of Vigentix. The license does
+not grant permission to use them; see TRADEMARK.md.
+
+This product bundles third-party software, each under its own license, when
+built for distribution. The main runtime dependencies are:
+
+- React and React DOM (MIT), Meta Platforms, Inc. and affiliates
+- Base UI (MIT), MUI and contributors
+- lucide-react (ISC), Lucide Contributors
+- tldts (MIT), Rémi Berson
+- SheetJS Community Edition, xlsx (Apache-2.0), SheetJS LLC
+- Vercel AI SDK, ai and @ai-sdk/* (Apache-2.0), Vercel, Inc.
+
+The full license texts ship with each package in node_modules; run
+`pnpm licenses list --prod` for the complete list.

@@ -1,0 +1,24 @@
+/*
+ * Reader Tailwind root: shared tokens, motion and packaged fonts
+ * (`assets/ui-tokens.css`, `assets/ui-fonts.css`), the same source as the
+ * popup. Reader chrome rules live in `style.css`. Utilities are generated
+ * only from the Reader and the shared components it renders.
+ */
+@import "tailwindcss" source(none);
+@import "../../assets/ui-fonts.css";
+@import "../../assets/ui-tokens.css";
+
+@source "./";
+@source "../../components/Mark.tsx";
+@source "../../components/Select.tsx";
+
+@layer base {
+  /* https://base-ui.com/react/overview/quick-start */
+  body {
+    position: relative;
+  }
+
+  #root {
+    isolation: isolate;
+  }
+}

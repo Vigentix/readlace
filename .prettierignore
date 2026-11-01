@@ -1,0 +1,37 @@
+# Generated / build artifacts
+.output
+.next
+.wxt
+coverage
+dist
+logs
+web-ext-artifacts
+playwright-report
+test-results
+blob-report
+stats.html
+stats-*.json
+
+# Dependencies and lockfiles
+node_modules
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+skills-lock.json
+.env.example
+
+# Minified bundles
+*.min.js
+*.min.css
+
+# Captured OpenAI HTML must stay one line for regex batch parsing
+lib/translate/fixtures/openai-untranslated-batch.html
+
+# Binary assets
+public/icon
+
+# Local agent tooling
+.agents
+.idea
+.scratch
+docs/security/evidence

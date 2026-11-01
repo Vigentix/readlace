@@ -1,0 +1,18 @@
+/*
+ * Readlace Settings page (ADR 0020). Shares the popup's tokens, motion and
+ * fonts (`assets/ui-tokens.css`, `assets/ui-fonts.css`).
+ */
+@import "../../assets/tailwind.css";
+@import "../../assets/ui-fonts.css";
+@import "../../assets/ui-tokens.css";
+
+@layer base {
+  html,
+  body {
+    background-color: var(--rl-paper);
+    color: var(--rl-ink);
+  }
+  body {
+    -webkit-font-smoothing: antialiased;
+  }
+}

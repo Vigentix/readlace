@@ -1,0 +1,18 @@
+diff --git a/lib/rsa.js b/lib/rsa.js
+index a4264822b4dcd6dca44ca3e59e410c982eed7183..cc8884bed215516ca9e44554f108b430c4db62a0 100644
+--- a/lib/rsa.js
++++ b/lib/rsa.js
+@@ -1171,8 +1171,11 @@ pki.setRsaPublicKey = pki.rsa.setPublicKey = function(n, e) {
+-          // validate DigestInfo structure and element count
++          // asn1.validate ignores extra children: check outer and nested counts.
++          // Backport digitalbazaar/forge#1152 (CVE-2026-85393).
+           var capture = {};
+           var errors = [];
+           if(!asn1.validate(obj, digestInfoValidator, capture, errors) ||
+-            obj.value.length !== 2) {
++            obj.value.length !== 2 ||
++            obj.value[0].value.length !==
++              (('parameters' in capture) ? 2 : 1)) {
+             var error = new Error(
+               'ASN.1 object does not contain a valid RSASSA-PKCS1-v1_5 ' +
+               'DigestInfo value.');

@@ -1,0 +1,30 @@
+# Triage labels (docs/agents/triage-labels.md) and ticket types used by the
+# issue tracker guide. Apply once with:
+#   gh label create <name> --color <color> --description "<description>" --force
+- name: needs-triage
+  color: "fbca04"
+  description: New; a maintainer has not looked at it yet
+- name: needs-info
+  color: "d4c5f9"
+  description: Waiting for more information from the reporter
+- name: ready-for-agent
+  color: "0e8a16"
+  description: Clear enough for an AI agent to pick up
+- name: ready-for-human
+  color: "1d76db"
+  description: Clear, but needs a human to implement or decide
+- name: wontfix
+  color: "ffffff"
+  description: Will not be worked on
+- name: type:research
+  color: "c5def5"
+  description: Wayfinding ticket that answers a question
+- name: type:prototype
+  color: "c5def5"
+  description: Wayfinding ticket that tries an approach
+- name: type:grilling
+  color: "c5def5"
+  description: Wayfinding ticket that resolves a design decision
+- name: type:task
+  color: "c5def5"
+  description: Wayfinding ticket that delivers work
