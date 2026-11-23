@@ -7,6 +7,7 @@ import { describe, expect, it } from "vitest";
 import * as releaseSecretScanner from "./scan-release-secrets.mjs";
 
 const {
+  releaseTargets,
   scanTargets,
   scanText,
   validateAuthManifest,
@@ -544,5 +545,24 @@ describe("release secret scanner", () => {
       { id: "localhost-script", count: 1 },
       { id: "unsafe-eval", count: 1 },
     ]);
+  });
+
+  it("names the release zips after the package version", async () => {
+    const root = await mkdtemp(join(tmpdir(), "readlace-release-targets-"));
+    try {
+      await writeFile(
+        join(root, "package.json"),
+        JSON.stringify({ version: "1.2.3" }),
+      );
+      expect(await releaseTargets(root)).toEqual([
+        ".output/chrome-mv3",
+        ".output/firefox-mv2",
+        ".output/readlace-1.2.3-chrome.zip",
+        ".output/readlace-1.2.3-firefox.zip",
+        ".output/readlace-1.2.3-sources.zip",
+      ]);
+    } finally {
+      await rm(root, { force: true, recursive: true });
+    }
   });
 });

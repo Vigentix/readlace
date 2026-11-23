@@ -487,11 +487,28 @@ export async function scanTargets(targets, root = process.cwd(), options = {}) {
 
 const STORE_OUTPUT = join(".output", "store");
 
-/** `--store`: scan the Chrome Web Store package from `pnpm zip:store`. */
-async function mainStore(root) {
+async function packageVersion(root) {
   const { version } = JSON.parse(
     await fs.readFile(resolve(root, "package.json"), "utf8"),
   );
+  return version;
+}
+
+/** Build outputs of `pnpm build` and `pnpm zip`; WXT names zips by version. */
+export async function releaseTargets(root = process.cwd()) {
+  const version = await packageVersion(root);
+  return [
+    ".output/chrome-mv3",
+    ".output/firefox-mv2",
+    `.output/readlace-${version}-chrome.zip`,
+    `.output/readlace-${version}-firefox.zip`,
+    `.output/readlace-${version}-sources.zip`,
+  ];
+}
+
+/** `--store`: scan the Chrome Web Store package from `pnpm zip:store`. */
+async function mainStore(root) {
+  const version = await packageVersion(root);
   const candidates = [
     join(STORE_OUTPUT, "chrome-mv3"),
     join(STORE_OUTPUT, `readlace-${version}-chrome.zip`),
@@ -528,13 +545,7 @@ async function main() {
     else console.log("PASS scanned the Store package; zero secret/dev matches");
     return;
   }
-  const candidates = [
-    ".output/chrome-mv3",
-    ".output/firefox-mv2",
-    ".output/readlace-0.0.1-chrome.zip",
-    ".output/readlace-0.0.1-firefox.zip",
-    ".output/readlace-0.0.1-sources.zip",
-  ];
+  const candidates = await releaseTargets(root);
   const requiredFindings = await validateRequiredTargets(candidates, root);
   const existing = [];
   for (const candidate of candidates)
