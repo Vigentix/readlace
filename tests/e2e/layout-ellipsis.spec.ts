@@ -964,6 +964,18 @@ async function openPopupForTab(extension: ExtensionSession, activePage: Page) {
   return popup;
 }
 
+/**
+ * Runs started by a direct `START_TRANSLATION` message skip the popup, so no
+ * site target is saved and the popup opens on English. For a page translated
+ * to another language the popup then offers "Translate to <language>" instead
+ * of the Translation | Original switch; choose that language first, as a user
+ * who translated from the popup would have.
+ */
+async function choosePopupTarget(popup: Page, language: string) {
+  await popup.getByRole("combobox", { name: "Translate to" }).click();
+  await popup.getByRole("option", { name: language }).click();
+}
+
 async function sendExtensionMessage(
   page: Page,
   message: Record<string, unknown>,
@@ -4135,6 +4147,7 @@ test.describe("extension layout stability", () => {
         name: /install|download|set up/i,
       }),
     ).toHaveCount(0);
+    await choosePopupTarget(partialPopup, "Vietnamese");
     await partialPopup.getByRole("button", { name: "Show original" }).click();
     await waitForState(extension.worker, url, "original");
     await expect(
@@ -5757,14 +5770,23 @@ test.describe("extension layout stability", () => {
         ).toHaveText(sources[1]!);
 
       const popup = await openPopupForTab(extension, page);
-      await expect(popup.getByRole("status")).toHaveText(
-        scenario.accepted ? "" : "Couldn’t translate this page. Try again.",
+      // The page outcome lives in the status line above the control; the
+      // `status` region only carries popup operation messages.
+      await expect(popup.getByRole("status")).toBeEmpty();
+      await expect(popup.locator("[data-page-status]")).toHaveAttribute(
+        "data-page-status",
+        scenario.accepted ? "partial" : "error",
       );
-      await expect(popup.getByRole("status")).not.toHaveText("Translating…");
-      if (scenario.accepted)
+      if (!scenario.accepted)
+        await expect(popup.locator("[data-page-status]")).toHaveText(
+          "Couldn’t translate this page. Try again.",
+        );
+      if (scenario.accepted) {
+        await choosePopupTarget(popup, "Vietnamese");
         await expect(
           popup.getByRole("button", { name: "Show original" }),
         ).toBeEnabled();
+      }
       await popup.close();
       await page.close();
     }
@@ -6006,10 +6028,13 @@ test.describe("extension layout stability", () => {
 
     const popup = await openPopupForTab(extension, page);
     await expect(popup.getByRole("status")).toBeEmpty();
+    await choosePopupTarget(popup, "Vietnamese");
     const showOriginal = popup.getByRole("button", { name: "Show original" });
     await expect(showOriginal).toBeEnabled();
     await showOriginal.click();
-    await expect(popup.getByRole("status")).toHaveText("Original restored.");
+    await expect(popup.locator('[data-page-status="original"]')).toHaveText(
+      "Showing the original",
+    );
     await waitForState(extension.worker, url, "original");
     await expect(page).toHaveTitle(titleSource);
     expect(

@@ -984,13 +984,15 @@ test("@popup-self-heal action popup repairs an already-open document", async ({
   const setup = await context.newPage();
   await setup.goto(`chrome-extension://${reloaded.id}/popup.html`);
   await expect(setup.locator('main[aria-busy="false"]')).toBeVisible();
-  await setExtensionStorage(setup, refreshTokenKey, "mock-refresh");
   await setExtensionStorage(
     setup,
     `alwaysTranslate:${new URL(fixtureUrl).hostname}`,
     { enabled: true, targetLanguage: "en" },
   );
   await setup.close();
+  // Uninstalling wiped the extension's IndexedDB, including the provider key
+  // (ADR 0020); save it again so the repaired document can translate.
+  await saveE2EProviderKey(context, reloaded.id);
 
   const recoveredPopup = await triggerAction(session, reloaded.id, page);
   await expect(page.locator("#probe")).toHaveText("Basic information");
