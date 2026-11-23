@@ -58,8 +58,9 @@ export function readReaderIntent(
         !/^\d{1,10}$/.test(context.activeId) ||
         Number(context.activeId) > 2_147_483_647)) ||
     !TARGET_LANGUAGES.some(({ code }) => code === intent.targetLanguage) ||
+    // ADR 0020: the one local user's email is empty, so an empty account is
+    // valid; it must still equal AUTH_STATUS when the click is taken.
     typeof intent.account !== "string" ||
-    !intent.account ||
     intent.account.length > 320
   )
     return;
