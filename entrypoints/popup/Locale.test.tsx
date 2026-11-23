@@ -131,7 +131,9 @@ test("renders the popup in Vietnamese", async () => {
   render(<App />);
   await waitForPopupReady();
 
-  expect(document.documentElement.lang).toBe("vi");
+  // The locale provider sets `lang` in an effect after the render that
+  // clears `aria-busy`; a slow runner can assert in between.
+  await waitFor(() => expect(document.documentElement.lang).toBe("vi"));
   expect(screen.getByRole("button", { name: "Dịch trang" })).toBeEnabled();
   // The detected-language label is for assistive technology only.
   const detectedLabel = screen.getByText("Ngôn ngữ trang:");

@@ -57,6 +57,20 @@ test("rejects expired, malformed and other-tab intents", () => {
     expect(readReaderIntent(invalid, 7)).toBeUndefined();
 });
 
+test("takes the local user's click, whose account is empty (ADR 0020)", async () => {
+  // The background's AUTH_STATUS answers the one local user with an empty
+  // email, so the popup writes `account: ""`.
+  vi.mocked(browser.runtime.sendMessage).mockResolvedValue({
+    authenticated: true,
+    user: { id: "local", email: "" },
+  } as never);
+  const value = { ...intent(), account: "" };
+  expect(readReaderIntent(value, 7)).toEqual(value);
+  await browser.storage.session.set({ [readerIntentKey(7)]: value });
+  expect(await takeReaderIntent(7)).toEqual(value);
+  expect(await takeReaderIntent(7)).toBeUndefined();
+});
+
 test("consumes one click once across simultaneous Reader surfaces", async () => {
   const value = intent();
   await browser.storage.session.set({ [readerIntentKey(7)]: value });

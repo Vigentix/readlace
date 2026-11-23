@@ -3131,7 +3131,7 @@ test("reader Drive port popup Translate opens the real common panel and translat
     await expect
       .poll(() =>
         popup!.popup.evaluate<boolean>(
-          "document.querySelector('main[aria-busy=\"false\"]') !== null && document.body.innerText.includes('reader@example.test')",
+          "document.querySelector('main[aria-busy=\"false\"]') !== null",
         ),
       )
       .toBe(true);
@@ -5566,7 +5566,7 @@ test("popup Reader handoff closes after fallback success", async () => {
       .poll(
         () =>
           popupControl!.popup.evaluate<boolean>(
-            `document.querySelector('main[aria-busy="false"]') !== null && document.body.innerText.includes("reader@example.test") && [...document.querySelectorAll("button")].some(candidate => candidate.textContent?.trim() === "Translate") && document.querySelector('[aria-label="Open local spreadsheet"]') !== null`,
+            `document.querySelector('main[aria-busy="false"]') !== null && [...document.querySelectorAll("button")].some(candidate => candidate.textContent?.trim() === "Translate") && document.querySelector('[aria-label="Open local spreadsheet"]') !== null`,
           ),
         { timeout: 15_000 },
       )
